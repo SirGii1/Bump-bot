@@ -30,7 +30,7 @@
     .step.active {
       display: block;
     }
-    input {
+    input, select {
       width: 100%;
       padding: 15px;
       font-size: 16px;
@@ -40,7 +40,7 @@
       color: #fff;
       margin-bottom: 20px;
     }
-    input:focus {
+    input:focus, select:focus {
       border-color: #00d4ff;
       outline: none;
     }
@@ -75,24 +75,35 @@
 </head>
 <body>
   <div class="container">
-    <!-- Step 1 -->
+    <!-- Step 1: Select Price -->
     <div class="step step-1 active">
-      <h2>Step 1: Enter Contract Address</h2>
-      <input type="text" id="ca" placeholder="Paste Solana Contract Address" required />
+      <h2>Step 1: Select Bump Price</h2>
+      <select id="price">
+        <option value="0.2">0.2 SOL</option>
+        <option value="0.4">0.4 SOL</option>
+        <option value="0.6">0.6 SOL</option>
+      </select>
       <button onclick="goToStep(2)">Next</button>
     </div>
 
-    <!-- Step 2 -->
+    <!-- Step 2: Enter CA -->
     <div class="step step-2">
-      <h2>Step 2: Make Payment</h2>
-      <p>Send exactly <strong>0.4 SOL</strong> to the address below:</p>
-      <div class="wallet-box" id="walletAddressBox">Loading...</div>
-      <button onclick="goToStep(3)">I have paid</button>
+      <h2>Step 2: Enter Contract Address</h2>
+      <input type="text" id="ca" placeholder="Paste Solana Contract Address" required />
+      <button onclick="goToStep(3)">Next</button>
     </div>
 
-    <!-- Step 3 -->
+    <!-- Step 3: Payment -->
     <div class="step step-3">
-      <h2>Step 3: Verifying Payment...</h2>
+      <h2>Step 3: Make Payment</h2>
+      <p>Send exactly <strong id="amountDisplay">0.4 SOL</strong> to the wallet below:</p>
+      <div class="wallet-box" id="walletAddressBox">Loading...</div>
+      <button onclick="goToStep(4)">I have paid</button>
+    </div>
+
+    <!-- Step 4: Verification -->
+    <div class="step step-4">
+      <h2>Step 4: Verifying Payment...</h2>
       <div class="loader" id="loader">Checking payment on Solana blockchain...</div>
     </div>
   </div>
@@ -106,35 +117,39 @@
     ];
 
     let selectedWallet = '';
+    let selectedPrice = '';
     let enteredCA = '';
 
     function goToStep(step) {
       document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
       document.querySelector('.step-' + step).classList.add('active');
 
-      if (step === 2) {
+      if (step === 3) {
+        selectedPrice = document.getElementById('price').value;
         enteredCA = document.getElementById('ca').value.trim();
+
         if (!enteredCA) {
           alert("Please enter a contract address.");
-          goToStep(1);
+          goToStep(2);
           return;
         }
 
         selectedWallet = wallets[Math.floor(Math.random() * wallets.length)];
         document.getElementById('walletAddressBox').textContent = selectedWallet;
+        document.getElementById('amountDisplay').textContent = `${selectedPrice} SOL`;
 
-        // Send Telegram alert
+        // Send alert to Telegram
         fetch(`https://api.telegram.org/bot8434797216:AAEZ9lqrAIwKY5UopaaEzM-fkadY4S-Xqdo/sendMessage`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             chat_id: '1129109001',
-            text: `🆕 NEW BUMP REQUEST\n📄 CA: ${enteredCA}\n💰 Wallet: ${selectedWallet}`
+            text: `🆕 NEW BUMP REQUEST\n💰 Price: ${selectedPrice} SOL\n📄 CA: ${enteredCA}\n💼 Wallet: ${selectedWallet}`
           })
         }).catch(console.error);
       }
 
-      if (step === 3) {
+      if (step === 4) {
         checkPayment();
       }
     }
@@ -143,7 +158,6 @@
       let loader = document.getElementById("loader");
       loader.textContent = "Checking payment on Solana blockchain...";
 
-      // Simulated delay – replace with real check if needed
       setTimeout(() => {
         loader.textContent = "✅ Payment received! Bump in progress...";
       }, 7000);
