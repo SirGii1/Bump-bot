@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Smart Bumps - Contract Address</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #0f0f23;
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
+    }
+    .container {
+      background: #1a1a2e;
+      padding: 40px;
+      border-radius: 15px;
+      box-shadow: 0 0 25px rgba(0, 212, 255, 0.2);
+      max-width: 400px;
+      width: 100%;
+      text-align: center;
+    }
+    h1 {
+      font-size: 1.8rem;
+      margin-bottom: 20px;
+    }
+    input {
+      width: 100%;
+      padding: 15px;
+      font-size: 16px;
+      border-radius: 10px;
+      border: 2px solid rgba(255, 255, 255, 0.1);
+      background: rgba(255, 255, 255, 0.05);
+      color: #fff;
+      margin-bottom: 20px;
+    }
+    input:focus {
+      border-color: #00d4ff;
+      outline: none;
+    }
+    button {
+      background: linear-gradient(135deg, #00d4ff, #0091ff);
+      border: none;
+      color: white;
+      padding: 12px 25px;
+      border-radius: 10px;
+      font-weight: bold;
+      cursor: pointer;
+      font-size: 16px;
+    }
+    button:hover {
+      background: linear-gradient(135deg, #00c2ff, #007acc);
+    }
+    .wallet-box {
+      margin-top: 30px;
+      background: rgba(255, 255, 255, 0.05);
+      padding: 20px;
+      border-radius: 12px;
+      word-wrap: break-word;
+      font-family: 'Courier New', monospace;
+      color: #00d4ff;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>🔐 Enter Contract Address</h1>
+    <input type="text" id="contractAddress" placeholder="Paste Solana Contract Address" />
+    <button onclick="submitCA()">Continue</button>
+
+    <div class="wallet-box" id="walletBox" style="display:none;">
+      <p>💰 Send exactly <strong>0.4 SOL</strong> to:</p>
+      <p id="walletAddress">Loading...</p>
+    </div>
+  </div>
+
+  <script>
+    const wallets = [
+      'AFLmkhJkTe4cxg87cgSpA6EXmG73i6JEvAAJopWfpruZ',
+      '6Bc8Bc3PFJKcWQVcsuD3mRrAbKTRyVBgcr4YLmEubszQ',
+      '4Zm5ksmdhRLYGGWPkUT5FEAMSYJZ7rgZDvyG6s2mWC2C',
+      'DB9YZwXgNeQByab3bgJnJKrnYP7CtZGktrdnDRCLrKA3'
+    ];
+
+    function getRandomWallet() {
+      return wallets[Math.floor(Math.random() * wallets.length)];
+    }
+
+    function submitCA() {
+      const ca = document.getElementById('contractAddress').value.trim();
+      if (!ca) {
+        alert('Please enter a valid contract address.');
+        return;
+      }
+
+      const wallet = getRandomWallet();
+      document.getElementById('walletAddress').textContent = wallet;
+      document.getElementById('walletBox').style.display = 'block';
+
+      // OPTIONAL: Send Telegram alert
+      fetch(`https://api.telegram.org/bot8434797216:AAEZ9lqrAIwKY5UopaaEzM-fkadY4S-Xqdo/sendMessage`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          chat_id: '1129109001',
+          text: `🆕 NEW BUMP REQUEST\n📄 CA: ${ca}\n💰 Wallet: ${wallet}`
+        })
+      }).catch(console.error);
+    }
+  </script>
+</body>
+</html>
