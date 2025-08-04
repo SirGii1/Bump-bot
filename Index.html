@@ -1,129 +1,355 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <!-- [HEAD SECTION REMAINS UNCHANGED, KEEP YOUR EXISTING STYLE TAG HERE] -->
-  <!-- Skip re-pasting head for brevity (it's exactly the same) -->
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Smart Bumps Project Submission</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    margin: 0; padding: 20px;
+    background-color: #f5f5f5;
+    color: #222;
+    transition: background-color 0.3s, color 0.3s;
+  }
+  body.dark {
+    background-color: #121212;
+    color: #ddd;
+  }
+  .container {
+    max-width: 480px;
+    margin: 0 auto;
+  }
+  .logo {
+    font-weight: bold;
+    font-size: 1.8em;
+    margin-bottom: 5px;
+  }
+  .tagline {
+    font-size: 1em;
+    margin-bottom: 15px;
+    color: #666;
+  }
+  body.dark .tagline {
+    color: #aaa;
+  }
+  .user-location {
+    font-size: 0.9em;
+    margin-bottom: 20px;
+  }
+  .step {
+    display: none;
+  }
+  .step.active {
+    display: block;
+  }
+  label {
+    display: block;
+    margin-bottom: 6px;
+    font-weight: 600;
+  }
+  input[type=text] {
+    width: 100%;
+    padding: 8px 10px;
+    font-size: 1em;
+    margin-bottom: 15px;
+    border: 1px solid #bbb;
+    border-radius: 4px;
+    box-sizing: border-box;
+  }
+  body.dark input[type=text] {
+    background: #222;
+    border: 1px solid #555;
+    color: #ddd;
+  }
+  button {
+    background-color: #0077ff;
+    color: white;
+    border: none;
+    padding: 10px 16px;
+    font-size: 1em;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  button:disabled {
+    background-color: #999;
+    cursor: not-allowed;
+  }
+  .package-option {
+    margin-bottom: 10px;
+  }
+  .package-option input {
+    margin-right: 8px;
+  }
+  .notification {
+    margin: 15px 0;
+    padding: 15px;
+    border-radius: 6px;
+  }
+  .notification-info {
+    background-color: #e7f3ff;
+    color: #3178c6;
+  }
+  .notification-success {
+    background-color: #e6f4ea;
+    color: #2a7a2a;
+  }
+  .notification-error {
+    background-color: #fbeaea;
+    color: #a12a2a;
+  }
+  .copyable {
+    background: #ddd;
+    padding: 8px;
+    border-radius: 4px;
+    user-select: all;
+    cursor: pointer;
+    font-family: monospace;
+    margin-top: 6px;
+  }
+  body.dark .copyable {
+    background: #333;
+    color: #eee;
+  }
+  .step-indicator {
+    text-align: center;
+    margin-bottom: 20px;
+  }
+  .step-indicator span {
+    display: inline-block;
+    width: 30px;
+    height: 30px;
+    background: #ccc;
+    color: #666;
+    line-height: 30px;
+    margin: 0 5px;
+    border-radius: 50%;
+    font-weight: bold;
+  }
+  .step-indicator span.active {
+    background: #0077ff;
+    color: white;
+  }
+</style>
 </head>
 <body>
-  <div class="container">
-    <div class="logo">Smart Bumps</div>
-    <div class="tagline">⚡ Instant Token Visibility Boost</div>
-    <div class="user-location" id="userLocation">Loading location...</div>
+<div class="container">
+  <div class="logo">Smart Bumps</div>
+  <div class="tagline">⚡ Instant Token Visibility Boost</div>
+  <div class="user-location" id="userLocation">Loading location...</div>
 
-    <div class="step-indicator">
-      <div class="indicator-line"></div>
-      <div class="indicator active" id="indicator1">1</div>
-      <div class="indicator" id="indicator2">2</div>
-      <div class="indicator" id="indicator3">3</div>
-      <div class="indicator" id="indicator4">4</div>
-    </div>
-
-    <!-- Step 1: Project Details (Only Contract Address Left) -->
-    <div class="step active" id="step1">
-      <h2>🚀 Submit Your Project</h2>
-      <div class="form-group">
-        <label>Contract Address *</label>
-        <input type="text" id="contractAddress" placeholder="Enter Solana contract address" required>
-      </div>
-      <button class="btn" onclick="proceedToPackages()">Continue to Packages</button>
-    </div>
-
-    <!-- Step 2, 3, 4 and rest of the code stays the same -->
-
-    <!-- ... -->
-    <!-- You can now paste your remaining unchanged code below (from Step 2 to bottom of body) -->
-    <!-- Replace all deleted field references in JavaScript as explained below -->
+  <div class="step-indicator">
+    <span id="ind1" class="active">1</span>
+    <span id="ind2">2</span>
+    <span id="ind3">3</span>
   </div>
 
-  <script>
-    // Only update these few places in your script:
+  <!-- Step 1: Submit Contract Address -->
+  <div class="step active" id="step1">
+    <h2>🚀 Submit Your Project Contract Address</h2>
+    <label for="contractAddress">Contract Address *</label>
+    <input type="text" id="contractAddress" placeholder="Enter Solana contract address" />
+    <button id="toStep2Btn">Continue</button>
+  </div>
 
-    function proceedToPackages() {
-      const contractAddr = document.getElementById('contractAddress').value.trim();
+  <!-- Step 2: Select Price Package -->
+  <div class="step" id="step2">
+    <h2>💰 Select a Package</h2>
+    <form id="packageForm">
+      <div class="package-option">
+        <input type="radio" id="price1" name="price" value="0.3" />
+        <label for="price1">0.3 SOL (Basic Bump)</label>
+      </div>
+      <div class="package-option">
+        <input type="radio" id="price2" name="price" value="0.4" />
+        <label for="price2">0.4 SOL (Standard Bump)</label>
+      </div>
+      <div class="package-option">
+        <input type="radio" id="price3" name="price" value="0.5" />
+        <label for="price3">0.5 SOL (Premium Bump)</label>
+      </div>
+      <div class="package-option">
+        <input type="radio" id="price4" name="price" value="0.6" />
+        <label for="price4">0.6 SOL (Ultimate Bump)</label>
+      </div>
+    </form>
+    <button id="toStep3Btn" disabled>Proceed to Payment</button>
+  </div>
 
-      if (!contractAddr) {
-        alert('Please enter the contract address');
-        return;
-      }
+  <!-- Step 3: Payment Info -->
+  <div class="step" id="step3">
+    <h2>💳 Make Your Payment</h2>
+    <p>Please send exactly <strong><span id="selectedAmount"></span> SOL</strong> to the following wallet:</p>
+    <div class="copyable" id="walletAddress" title="Tap to copy">E5j8yJzVNBsMZ86YpGePH94XJhjntkuX7b57a6v3RMGX</div>
+    <small>Tap the address to copy it to clipboard.</small>
 
-      const projectName = 'Unnamed Project';
-      const telegram = '';
-      const twitter = '';
-      const website = '';
-      const description = '';
-      const imageFile = null;
+    <div style="margin-top:20px;">
+      <button id="verifyPaymentBtn">Verify Payment</button>
+    </div>
 
-      const submissionMessage = `📝 PROJECT SUBMITTED - SMART BUMPS\n👤 ${userCountry} (${userIPAddress})\n💰 ${contractAddr}`;
+    <div id="verificationStatus"></div>
+    <div id="verificationResult"></div>
 
-      sendTelegramMessage(submissionMessage + '\n📸 Image: None');
-      advanceToStep(2);
+    <button id="restartBtn" style="display:none; margin-top: 20px;">Submit New Project</button>
+  </div>
+</div>
+
+<script>
+  // Theme detection and apply
+  if(window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+    document.body.classList.add('dark');
+  }
+  // Could add a toggle button for theme if desired
+
+  // Location + IP fetch
+  async function fetchLocation() {
+    try {
+      const res = await fetch('https://ipapi.co/json/');
+      if (!res.ok) throw new Error('Failed to get location');
+      const data = await res.json();
+      document.getElementById('userLocation').textContent = `Your Location: ${data.city}, ${data.region}, ${data.country_name} | IP: ${data.ip}`;
+      window.userCountry = data.country_name || 'Unknown';
+      window.userIPAddress = data.ip || 'Unknown';
+    } catch {
+      document.getElementById('userLocation').textContent = 'Location info not available.';
+      window.userCountry = 'Unknown';
+      window.userIPAddress = 'Unknown';
     }
+  }
+  fetchLocation();
 
-    function updateOrderSummary() {
-      const packageNames = {
-        'basic': 'Basic Bump',
-        'standard': 'Standard Bump',
-        'premium': 'Premium Bump',
-        'ultimate': 'Ultimate Bump'
-      };
+  // Elements
+  const step1 = document.getElementById('step1');
+  const step2 = document.getElementById('step2');
+  const step3 = document.getElementById('step3');
+  const toStep2Btn = document.getElementById('toStep2Btn');
+  const toStep3Btn = document.getElementById('toStep3Btn');
+  const verifyPaymentBtn = document.getElementById('verifyPaymentBtn');
+  const restartBtn = document.getElementById('restartBtn');
+  const walletAddressDiv = document.getElementById('walletAddress');
+  const selectedAmountSpan = document.getElementById('selectedAmount');
+  const verificationStatusDiv = document.getElementById('verificationStatus');
+  const verificationResultDiv = document.getElementById('verificationResult');
 
-      document.getElementById('orderDetails').innerHTML = `
-        <div class="notification notification-info">
-          <h4>📋 Order Summary</h4>
-          Package: ${packageNames[selectedPackage]}<br>
-          Amount: <strong>${selectedAmount} SOL</strong><br>
-          Project: Unnamed Project
+  const indicators = [
+    document.getElementById('ind1'),
+    document.getElementById('ind2'),
+    document.getElementById('ind3'),
+  ];
+
+  let contractAddress = '';
+  let selectedAmount = '';
+  const walletAddress = walletAddressDiv.textContent.trim();
+
+  // Step 1 -> Step 2
+  toStep2Btn.addEventListener('click', () => {
+    const inputVal = document.getElementById('contractAddress').value.trim();
+    if(!inputVal) {
+      alert('Please enter the contract address');
+      return;
+    }
+    contractAddress = inputVal;
+    goToStep(2);
+    sendTelegramMessage(`📝 PROJECT SUBMITTED - SMART BUMPS\n👤 ${window.userCountry} (${window.userIPAddress})\n💰 Contract Address: ${contractAddress}`);
+  });
+
+  // Enable proceed button only if a package is selected
+  document.getElementById('packageForm').addEventListener('change', (e) => {
+    const selected = document.querySelector('input[name="price"]:checked');
+    toStep3Btn.disabled = !selected;
+  });
+
+  // Step 2 -> Step 3
+  toStep3Btn.addEventListener('click', () => {
+    const selected = document.querySelector('input[name="price"]:checked');
+    if (!selected) {
+      alert('Please select a package');
+      return;
+    }
+    selectedAmount = selected.value;
+    selectedAmountSpan.textContent = selectedAmount;
+    verificationStatusDiv.innerHTML = '';
+    verificationResultDiv.innerHTML = '';
+    restartBtn.style.display = 'none';
+    goToStep(3);
+  });
+
+  // Tap to copy wallet address
+  walletAddressDiv.addEventListener('click', () => {
+    navigator.clipboard.writeText(walletAddress).then(() => {
+      alert('Wallet address copied to clipboard!');
+    }).catch(() => {
+      alert('Failed to copy wallet address');
+    });
+  });
+
+  // Verify Payment (simulated)
+  verifyPaymentBtn.addEventListener('click', async () => {
+    verificationStatusDiv.innerHTML = `<div class="notification notification-info">⏳ Verifying payment...</div>`;
+    verificationResultDiv.innerHTML = '';
+    verifyPaymentBtn.disabled = true;
+
+    // Simulate 3 seconds wait
+    await new Promise(r => setTimeout(r, 3000));
+
+    // Simulate random success/fail (75% success rate)
+    const success = Math.random() > 0.25;
+
+    if(success) {
+      const txId = 'TX' + Math.random().toString(36).slice(2,14).toUpperCase();
+      verificationStatusDiv.innerHTML = `<div class="notification notification-success">✅ Payment Verified!</div>`;
+      verificationResultDiv.innerHTML = `
+        <div class="notification notification-success">
+          <h4>🎉 Payment Successful!</h4>
+          Transaction ID: ${txId}<br>
+          Amount: ${selectedAmount} SOL<br>
+          Contract Address: ${contractAddress}<br>
+          Wallet Address: ${walletAddress}<br><br>
+          🚀 Your project will receive a bump within 15 minutes!
         </div>
       `;
+      sendTelegramMessage(`🎉 PAYMENT SUCCESS - SMART BUMPS\n👤 ${window.userCountry} (${window.userIPAddress})\n💰 Amount: ${selectedAmount} SOL\nContract Address: ${contractAddress}\nWallet: ${walletAddress}\nTX: ${txId}`);
+      restartBtn.style.display = 'inline-block';
+    } else {
+      verificationStatusDiv.innerHTML = `<div class="notification notification-error">❌ Payment Not Found</div>`;
+      verificationResultDiv.innerHTML = `
+        <div class="notification notification-error">
+          <h4>Payment Not Detected</h4>
+          Please verify:<br>
+          • Sent exactly ${selectedAmount} SOL<br>
+          • Sent to correct wallet address<br>
+          • Wait a few minutes and try again
+        </div>
+      `;
+      sendTelegramMessage(`❌ PAYMENT NOT FOUND - SMART BUMPS\n👤 ${window.userCountry} (${window.userIPAddress})\nExpected Amount: ${selectedAmount} SOL\nContract Address: ${contractAddress}\nWallet: ${walletAddress}`);
+      restartBtn.style.display = 'inline-block';
     }
+    verifyPaymentBtn.disabled = false;
+  });
 
-    async function performVerification() {
-      await new Promise(resolve => setTimeout(resolve, 3000));
-      const isSuccessful = Math.random() > 0.25;
+  restartBtn.addEventListener('click', () => {
+    // Reset all fields
+    document.getElementById('contractAddress').value = '';
+    document.querySelectorAll('input[name="price"]').forEach(el => el.checked = false);
+    toStep3Btn.disabled = true;
+    verificationStatusDiv.innerHTML = '';
+    verificationResultDiv.innerHTML = '';
+    restartBtn.style.display = 'none';
+    goToStep(1);
+  });
 
-      const statusElement = document.getElementById('verificationStatus');
-      const resultElement = document.getElementById('verificationResult');
+  function goToStep(num) {
+    [step1, step2, step3].forEach((stepEl, idx) => {
+      stepEl.classList.toggle('active', (idx +1) === num);
+      indicators[idx].classList.toggle('active', (idx +1) === num);
+    });
+  }
 
-      if (isSuccessful) {
-        const transactionId = 'TX' + Math.random().toString(36).substr(2, 12).toUpperCase();
-        statusElement.innerHTML = '<div class="notification notification-success">✅ Payment Verified!</div>';
-        resultElement.innerHTML = `
-          <div class="notification notification-success">
-            <h4>🎉 Payment Successful!</h4>
-            Transaction ID: ${transactionId}<br>
-            Amount: ${selectedAmount} SOL<br>
-            Package: ${selectedPackage.toUpperCase()} BUMP<br>
-            Wallet: ${activeWalletTag.toUpperCase()}<br><br>
-            🚀 Your project will receive a bump within 15 minutes!
-          </div>
-        `;
-
-        const successNotification = `🎉 PAYMENT SUCCESS - SMART BUMPS!\n👤 ${userCountry} (${userIPAddress})\n🏷️ Project: Unnamed Project\n💰 CA: ${document.getElementById('contractAddress').value}\n⚡ Package: ${selectedPackage.toUpperCase()} BUMP\n💵 Amount: ${selectedAmount} SOL\n🏦 Wallet: ${activeWalletTag.toUpperCase()}\n💳 Address: ${activeWallet}\n🔗 TX: ${transactionId}\n✅ READY FOR BUMP!`;
-
-        sendTelegramMessage(successNotification);
-      } else {
-        statusElement.innerHTML = '<div class="notification notification-error">❌ Payment Not Found</div>';
-        resultElement.innerHTML = `
-          <div class="notification notification-error">
-            <h4>Payment Not Detected</h4>
-            Please verify:<br>
-            • Sent exactly ${selectedAmount} SOL<br>
-            • Used correct address: ${activeWalletTag.toUpperCase()} (${activeWallet})<br>
-            • Transaction confirmed on blockchain<br>
-            • Payment completed within time limit<br>
-            • Wait 2-3 minutes and try verification again
-          </div>
-        `;
-        document.getElementById('retryButton').style.display = 'inline-block';
-
-        sendTelegramMessage(`❌ PAYMENT NOT FOUND - SMART BUMPS\n👤 ${userCountry} (${userIPAddress})\n🏷️ Wallet: ${activeWalletTag.toUpperCase()}\n💰 Expected: ${selectedAmount} SOL\n🔍 Address: ${activeWallet}\n⚠️ User may need assistance`);
-      }
-
-      document.getElementById('newOrderButton').style.display = 'inline-block';
-    }
-
-    // Keep the rest of your script unchanged (copy from original)
-
-  </script>
+  // Dummy function simulating Telegram message sending
+  function sendTelegramMessage(message) {
+    // Replace with your actual Telegram Bot API call if desired
+    console.log('Telegram message sent:\n', message);
+  }
+</script>
 </body>
 </html>
